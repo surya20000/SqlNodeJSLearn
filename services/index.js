@@ -34,7 +34,20 @@ const getRow = async () => {
         student._rawData[9].split(".")[0]
       );
       console.log(
-        `Student: ${StudentName}, Percentage:- ${StudentAttendancePercentage}`
+        `Student: ${StudentName}, Attendance Status:- ${
+          (StudentAttendancePercentage > 33) &
+          (StudentAttendancePercentage < 60)
+            ? "Fair"
+            : (StudentAttendancePercentage >= 60) &
+              (StudentAttendancePercentage < 85)
+            ? "Good"
+            : (StudentAttendancePercentage >= 85) &
+              (StudentAttendancePercentage < 95)
+            ? "Amazing"
+            : StudentAttendancePercentage >= 95
+            ? "Excellent"
+            : "Poor"
+        }`
       );
     });
   } catch (error) {
