@@ -1,1 +1,1 @@
-# SqlNodeJSLearn
+# In this Repository My Main Main si to learn SQL Commands and also Learning how to integrate SQL as a backend data store for the app and also create a Student Attendance Tracker Application.
