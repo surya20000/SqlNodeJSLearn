@@ -1,58 +1,16 @@
-import { GoogleSpreadsheet } from "google-spreadsheet";
-import { JWT } from "google-auth-library";
-import fs from "fs";
+import express from "express";
+import { connectToDatabase } from "./utils/db.connection.js";
+import userRoutes from "./routes/user.Routes.js";
 
-const responseSheetId = "1Bkjcqn5JRzXvPFawLickRe6_0EVR6qSLgnnwn6ACnOI";
+const app = express();
+app.use(express.json());
 
-const credentials = JSON.parse(
-  fs.readFileSync("attendance-tracker-441406-f9043162c0cf.json")
-);
+app.use("/api/user", userRoutes);
+const port = process.env.BACKEND_PORT || 9000;
 
-const serviceAccountAuth = new JWT({
-  email: credentials.client_email,
-  key: credentials.private_key.replace(/\\n/g, "\n"),
-  scopes: ["https://www.googleapis.com/auth/spreadsheets"],
+
+connectToDatabase(); //* Setting up a connection with the database */
+
+app.listen(port, () => {
+  console.log(`Server Is up and running at port ${port}`);
 });
-
-const doc = new GoogleSpreadsheet(responseSheetId, serviceAccountAuth);
-
-const getRow = async () => {
-  try {
-    await doc.loadInfo();
-
-    const sheet = doc.sheetsByIndex[0];
-
-    const rows = await sheet.getRows();
-
-    await sheet.loadHeaderRow();
-    const columnName = sheet.headerValues;
-    console.log("column's ", columnName);
-
-    rows.forEach((student) => {
-      const StudentName = student._rawData[0];
-      const StudentAttendancePercentage = Number(
-        student._rawData[9].split(".")[0]
-      );
-      console.log(
-        `Student: ${StudentName}, Attendance Status:- ${
-          (StudentAttendancePercentage > 33) &
-          (StudentAttendancePercentage < 60)
-            ? "Fair"
-            : (StudentAttendancePercentage >= 60) &
-              (StudentAttendancePercentage < 85)
-            ? "Good"
-            : (StudentAttendancePercentage >= 85) &
-              (StudentAttendancePercentage < 95)
-            ? "Amazing"
-            : StudentAttendancePercentage >= 95
-            ? "Excellent"
-            : "Poor"
-        }`
-      );
-    });
-  } catch (error) {
-    console.error("Error fetching row:", error);
-  }
-};
-
-getRow();
