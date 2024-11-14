@@ -85,7 +85,6 @@ export const getAllStudentsAttendanceDetail = async () => {
 
     const rows = await sheet.getRows();
 
-    // console.log(rows);
     const allStudentsData = [];
 
     rows.forEach((student) => {
@@ -101,5 +100,3 @@ export const getAllStudentsAttendanceDetail = async () => {
     console.log("Error fetching all students attendance info", error.message);
   }
 };
-
-// getAllStudentsAttendanceDetail();
