@@ -61,14 +61,45 @@ export const getRow = async () => {
   }
 };
 
-export const addRow = async (userName) => {
+export const addRow = async ({ userName, userEmail }) => {
   try {
     await doc.loadInfo();
 
     const sheet = doc.sheetsByIndex[0];
 
-    await sheet.addRow({ StudentName: userName, Percentage: "0.00%" });
+    await sheet.addRow({
+      StudentName: userName,
+      StudentEmail: userEmail,
+      Percentage: "0.00%",
+    });
   } catch (error) {
     console.log(error.message);
   }
 };
+
+export const getAllStudentsAttendanceDetail = async () => {
+  try {
+    await doc.loadInfo();
+
+    const sheet = doc.sheetsByIndex[0];
+
+    const rows = await sheet.getRows();
+
+    // console.log(rows);
+    const allStudentsData = [];
+
+    rows.forEach((student) => {
+      const studentName = student._rawData[0];
+      const studentEmail = student._rawData[1];
+      const currentAttendance = student._rawData[2];
+
+      allStudentsData.push({ studentName, studentEmail, currentAttendance });
+    });
+
+    return allStudentsData;
+  } catch (error) {
+    console.log("Error fetching all students attendance info", error.message);
+  }
+};
+
+// getAllStudentsAttendanceDetail();
